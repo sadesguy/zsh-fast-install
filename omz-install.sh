@@ -33,6 +33,7 @@ declare -A plugins=(
     ["fast-syntax-highlighting"]="https://github.com/zdharma-continuum/fast-syntax-highlighting.git"
     ["zsh-autocomplete"]="https://github.com/marlonrichert/zsh-autocomplete.git"
     ["fzf"]="https://github.com/junegunn/fzf.git"
+    ["evalcache"]="https://github.com/mroth/evalcache"
 )
 
 # Install plugins
@@ -87,9 +88,9 @@ choose_theme
 
     # Update plugins
     if grep -q '^plugins=' "$ZSHRC"; then
-        sed -i 's/^plugins=.*/plugins=(fzf git sudo history-substring-search colored-man-pages zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete zsh-z)/' "$ZSHRC"
+        sed -i 's/^plugins=.*/plugins=(fzf git sudo history-substring-search colored-man-pages zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete zsh-z evalchache)/' "$ZSHRC"
     else
-        echo 'plugins=(fzf git sudo history-substring-search colored-man-pages zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete zsh-z)' >>"$ZSHRC"
+        echo 'plugins=(fzf git sudo history-substring-search colored-man-pages zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete zsh-z evalcache)' >>"$ZSHRC"
     fi
 
     # Add custom aliases
