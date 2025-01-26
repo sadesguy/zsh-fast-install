@@ -52,9 +52,31 @@ for plugin in "${!plugins[@]}"; do
     fi
 done
 
+choose_theme() {
+    local themes_dir="$HOME/.oh-my-zsh/themes"
+    if [ -d "$themes_dir" ]; then
+        echo "Available themes:"
+        ls "$themes_dir" | sed 's/\.zsh-theme$//'
+        read -r -p "Enter the theme name (without .zsh-theme): " theme_choice
+        if [ -n "$theme_choice" ]; then
+            if grep -q '^ZSH_THEME=' "$ZSHRC"; then
+                sed -i "s/^ZSH_THEME=.*/ZSH_THEME=\"$theme_choice\"/" "$ZSHRC"
+            else
+                echo "ZSH_THEME=\"$theme_choice\"" >> "$ZSHRC"
+            fi
+        else
+            echo "No theme selected. Using default."
+        fi
+    else
+        echo "No themes directory found. Skipping theme selection."
+    fi
+}
+
 # Update ~/.zshrc without duplicates
 echo "Configuring ~/.zshrc..."
 ZSHRC="$HOME/.zshrc"
+choose_theme
+
 {
     # Update theme
     if grep -q '^ZSH_THEME=' "$ZSHRC"; then
@@ -87,6 +109,26 @@ if [ "$SHELL" != "$(which zsh)" ]; then
     chsh -s "$(which zsh)"
 else
     echo "Zsh is already the default shell."
+fi
+
+uninstall_all() {
+    echo "Uninstalling Oh My Zsh and reverting to default shell..."
+    # Revert to default shell (/bin/bash)
+    chsh -s /bin/bash
+    # Remove Oh My Zsh directory
+    rm -rf "$ZSH_DIR"
+    # (Optional) Backup and remove .zshrc
+    if [ -f "$ZSHRC" ]; then
+        mv "$ZSHRC" "$ZSHRC.bak"
+        echo "Backed up $ZSHRC to $ZSHRC.bak"
+    fi
+    echo "Uninstall complete. Please open a new terminal or log out and back in."
+}
+
+read -r -p "Do you want to uninstall everything (Oh My Zsh, plugins) and revert shell to bash? [y/N]: " uninstall_choice
+if [[ "$uninstall_choice" =~ ^[Yy]$ ]]; then
+    uninstall_all
+    exit 0
 fi
 
 echo "ZSH installation and configuration complete. Restart your shell or run 'source ~/.zshrc' to apply changes."
